@@ -8,35 +8,39 @@ from promensys import settings
 
 
 class UserManager(BaseUserManager):
-    def create_user(self, password, phone,
+    def create_user(self, password, phone, email,
                     is_admin=False, is_staff=False,
-                    is_active=False, is_superuser=False,
+                    is_active=False, age=18,
                     login=''):
 
         if not phone:
             raise ValueError("User must have phone")
+        if not email:
+            raise ValueError("User must have email")
         if not password:
             raise ValueError("User must have password")
 
         user = self.model(phone=phone)
         user.set_password(password)
         user.login = login
+        user.email = email
+        user.age = age
         user.is_admin = is_admin
         user.is_staff = is_staff
         user.is_active = is_active
-        user.is_superuser = is_superuser
         user.save()
 
         return user
 
-
-    def create_superuser(self, password, phone):
+    def create_superuser(self, password, phone, email):
         if not phone:
             raise ValueError("User must have phone")
+        if not email:
+            raise ValueError("User must have email")
         if not password:
             raise ValueError("User must have password")
 
-        user = self.create_user(password=password, phone=phone)
+        user = self.create_user(password=password, email=email, phone=phone)
         user.is_superuser = True
         user.is_staff = True
         user.is_admin = True
